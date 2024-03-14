@@ -1,0 +1,11 @@
+#pip install django-query-counter
+
+from query_counter.decorators import queries_counter
+
+class ListuserView(Apiview):
+  @queries_counter
+  def get(self, *args, **kwargs):
+      pass
+
+
+we can show in terminal howmany number of code exicuted.
