@@ -1,0 +1,38 @@
+#django permissions
+
+from django.contrib.auth.decorators import user_passes_test
+from django.http import HttpResponse
+
+def has_permissions(user):
+    return user.has_perm('one_case') or user.has_perm('another_case')
+
+@user_passes_test(has_permissions)
+def your_view(request):
+    # Your view logic goes here
+    return HttpResponse("This view requires either 'one_case' or 'another_case' permission.")
+
+
+
+from django.db import models
+
+class CustomPermissions(models.Model):
+    class Meta:
+        permissions = [
+            ("can_access_admin_panel", "Can access admin panel"),
+            ("can_view_employee_data", "Can view employee data"),
+            ("can_view_hr_data", "Can view HR data"),
+        ]
+
+from django.contrib.auth.models import Group, Permission
+
+# Get or create the custom permissions
+permissions = Permission.objects.filter(content_type__app_label='your_app', codename__in=['can_access_admin_panel', 'can_view_employee_data', 'can_view_hr_data'])
+
+# Assign permissions to each role
+admin_group, _ = Group.objects.get_or_create(name='Admin')
+employee_group, _ = Group.objects.get_or_create(name='Employee')
+hr_group, _ = Group.objects.get_or_create(name='HR')
+
+admin_group.permissions.set(permissions.filter(codename='can_access_admin_panel'))
+employee_group.permissions.set(permissions.filter(codename='can_view_employee_data'))
+hr_group.permissions.set(permissions.filter(codename='can_view_hr_data'))
