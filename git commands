@@ -1,0 +1,5 @@
+1. For deleting git branch - 
+  git@DELETE /c/local/branch (main)
+$ git branch --delete main
+error: Cannot delete branch 'main' checked out at 'C:/git/delete'
+  git branch --delete
